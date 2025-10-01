@@ -89,7 +89,6 @@ function showTab(tabId, element){
 }
 
 function buyNow(product, type, price){
-    // Open payment.html with query parameters
     const url = `payment.html?product=${encodeURIComponent(product)}&type=${encodeURIComponent(type)}&price=${encodeURIComponent(price)}`;
     window.location.href = url;
 }
