@@ -5,26 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PaperCraft Models</title>
 <style>
-body { margin:0; font-family:Arial,sans-serif; background:#f5f5f5; color:#333; }
-.banner { background: linear-gradient(90deg, #ff4d4d, #ff9900); color:white; text-align:center; padding:50px 20px; font-size:42px; font-weight:bold; letter-spacing:2px; }
+body { margin:0; font-family:'Arial',sans-serif; background:#f5f5f5; color:#333; }
+/* Banner */
+.banner { background: linear-gradient(90deg, #ff4d4d, #ff9900); color:white; text-align:center; padding:50px 20px; font-size:42px; font-weight:bold; letter-spacing:2px; position:relative; }
 .subtitle { font-size:18px; font-weight:normal; margin-top:10px; color:#fffdd0; }
+
+/* Container & Layout */
 .container { display:flex; max-width:1400px; margin:auto; padding:30px; gap:30px; flex-wrap:wrap; }
 .tabs { display:flex; flex-direction:column; width:180px; background:#fff; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1); padding:10px 0; height:fit-content; }
-.tab { padding:15px 20px; margin:5px 10px; cursor:pointer; border-left:5px solid transparent; font-size:18px; border-radius:8px; transition:all 0.3s; text-align:center; }
+.tab { padding:15px 20px; margin:5px 10px; cursor:pointer; border-left:5px solid transparent; font-size:18px; border-radius:8px; transition: all 0.3s; text-align:center; }
 .tab:hover { background:#ffefef; }
 .tab.active { background:#ff4d4d; color:white; border-left:5px solid #ff9900; font-weight:bold; }
+
+/* Products grid */
 .products { flex:1; display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:25px; display:none; }
 .products.active { display:grid; }
-.product-card { background:white; border-radius:12px; padding:20px; box-shadow:0 8px 20px rgba(0,0,0,0.12); text-align:center; transition: transform 0.3s, box-shadow 0.3s; }
-.product-card:hover { transform:translateY(-8px); box-shadow:0 12px 25px rgba(0,0,0,0.2); }
+.product-card { background:white; border-radius:12px; padding:20px; box-shadow:0 8px 20px rgba(0,0,0,0.12); text-align:center; transition:transform 0.3s, box-shadow 0.3s; }
+.product-card:hover { transform: translateY(-8px); box-shadow:0 12px 25px rgba(0,0,0,0.2); }
 .product-card img { width:100%; height:250px; object-fit:cover; border-radius:12px; transition: transform 0.3s; }
 .product-card img:hover { transform:scale(1.05); }
 .product-card h3 { margin:15px 0 8px 0; font-size:22px; }
 .product-card p { color:#555; font-size:18px; margin:5px 0; }
-.buy-btn { background:#ff4d4d; color:white; border:none; padding:12px 20px; border-radius:6px; cursor:pointer; margin-top:12px; font-size:18px; transition:background 0.3s; }
+.buy-btn { background:#ff4d4d; color:white; border:none; padding:12px 20px; border-radius:6px; cursor:pointer; margin-top:12px; font-size:18px; transition:background 0.3s; text-decoration:none; display:inline-block; }
 .buy-btn:hover { background:#ff1a1a; }
+
 /* Responsive */
-@media(max-width:900px) { .container { flex-direction:column; } .tabs { flex-direction:row; width:100%; margin-bottom:20px; } .tab { flex:1; text-align:center; border-left:none; border-bottom:3px solid transparent; } .tab.active { border-left:none; border-bottom:3px solid #ff9900; } }
+@media(max-width:900px){ .container { flex-direction:column; } .tabs { flex-direction:row; width:100%; margin-bottom:20px; } .tab { flex:1; text-align:center; border-left:none; border-bottom:3px solid transparent; } .tab.active { border-left:none; border-bottom:3px solid #ff9900; } }
+
+/* Scrolling Disclaimer */
+.disclaimer { position:fixed; bottom:0; width:100%; background:#ffebcc; color:#333; font-size:14px; white-space:nowrap; overflow:hidden; }
+.disclaimer p { display:inline-block; padding-left:100%; animation: scroll 20s linear infinite; }
+@keyframes scroll { 0% { transform:translateX(0%); } 100% { transform:translateX(-100%); } }
 </style>
 </head>
 <body>
@@ -44,46 +55,45 @@ body { margin:0; font-family:Arial,sans-serif; background:#f5f5f5; color:#333; }
     <!-- Fully Made Products -->
     <div class="products active" id="fullymade">
         <div class="product-card">
-            <img src="gojo_FullyMade.jpg" alt="Gojo Satoru">
+            <img src="gojo_FullyMade.jpg" alt="Gojo">
             <h3>Gojo Satoru</h3>
             <p>₹20</p>
-            <button class="buy-btn" onclick="openPayment('Gojo Satoru','Fully Made',20)">Buy Now</button>
+            <a class="buy-btn" href="payment.html?product=Gojo%20Satoru&type=Fully%20Made&price=20">Order Now</a>
         </div>
         <div class="product-card">
-            <img src="sukuna_FullyMade.jpg" alt="Sukuna Ryomen">
+            <img src="sukuna_FullyMade.jpg" alt="Sukuna">
             <h3>Sukuna Ryomen</h3>
             <p>₹20</p>
-            <button class="buy-btn" onclick="openPayment('Sukuna Ryomen','Fully Made',20)">Buy Now</button>
+            <a class="buy-btn" href="payment.html?product=Sukuna%20Ryomen&type=Fully%20Made&price=20">Order Now</a>
         </div>
     </div>
 
     <!-- Templates Products -->
     <div class="products" id="templates">
         <div class="product-card">
-            <img src="gojo_Template.jpg" alt="Gojo Satoru Template">
+            <img src="gojo_Template.jpg" alt="Gojo">
             <h3>Gojo Satoru</h3>
             <p>₹10</p>
-            <button class="buy-btn" onclick="openPayment('Gojo Satoru','Template',10)">Buy Now</button>
+            <a class="buy-btn" href="payment.html?product=Gojo%20Satoru&type=Template&price=10">Order Now</a>
         </div>
         <div class="product-card">
-            <img src="sukuna_Template.jpg" alt="Sukuna Ryomen Template">
+            <img src="sukuna_Template.jpg" alt="Sukuna">
             <h3>Sukuna Ryomen</h3>
             <p>₹10</p>
-            <button class="buy-btn" onclick="openPayment('Sukuna Ryomen','Template',10)">Buy Now</button>
+            <a class="buy-btn" href="payment.html?product=Sukuna%20Ryomen&type=Template&price=10">Order Now</a>
         </div>
     </div>
 </div>
 
-<script>
-function showTab(tabId, element) {
-    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-    element.classList.add('active');
-    document.querySelectorAll('.products').forEach(section => section.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-}
+<!-- Scrolling Disclaimer -->
+<div class="disclaimer"><p>Disclaimer: Website only used to sell things in Suderashan Public School only</p></div>
 
-function openPayment(product, type, price) {
-    window.location.href = `payment.html?product=${encodeURIComponent(product)}&type=${encodeURIComponent(type)}&price=${encodeURIComponent(price)}`;
+<script>
+function showTab(tabId, element){
+    document.querySelectorAll('.tab').forEach(tab=>tab.classList.remove('active'));
+    element.classList.add('active');
+    document.querySelectorAll('.products').forEach(section=>section.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
 }
 </script>
 
