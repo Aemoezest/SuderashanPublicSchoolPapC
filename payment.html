@@ -4,175 +4,88 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PaperCraft Order</title>
+
 <style>
-body {
-  margin:0;
-  font-family:'Arial',sans-serif;
-  background: linear-gradient(135deg,#fff0cc,#ffe6e6);
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-  animation:bgMove 20s linear infinite;
-}
-@keyframes bgMove {
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
-}
-
-.order-container {
-  background:#fff;
-  border-radius:20px;
-  box-shadow:0 15px 30px rgba(0,0,0,0.2);
-  padding:35px 25px;
-  width:100%;
-  max-width:450px;
-  text-align:center;
-  opacity:0;
-  transform:translateY(30px);
-  animation:fadeIn 0.8s forwards;
-}
-@keyframes fadeIn {
-  to { opacity:1; transform:translateY(0); }
-}
-
-h1 {
-  color:#ff4d4d;
-  margin-bottom:15px;
-  text-shadow:0 2px 8px rgba(0,0,0,0.15);
-}
-#selectedProduct {
-  font-weight:bold;
-  color:#333;
-  margin-bottom:25px;
-  font-size:18px;
-  animation:slideIn 0.6s forwards;
-}
-@keyframes slideIn { 0%{opacity:0; transform:translateX(-20px);} 100%{opacity:1; transform:translateX(0);} }
-
-input {
-  width:90%;
-  padding:12px;
-  margin:12px 0;
-  border-radius:10px;
-  border:1px solid #ccc;
-  font-size:16px;
-  transition: all 0.3s;
-}
-input:focus {
-  border-color:#ff4d4d;
-  box-shadow:0 0 10px rgba(255,77,77,0.3);
-  outline:none;
-}
-
-button {
-  background:#ff4d4d;
-  color:white;
-  border:none;
-  padding:12px 25px;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:18px;
-  margin-top:15px;
-  transition: all 0.3s, transform 0.3s;
-  box-shadow:0 5px 15px rgba(255,77,77,0.4);
-}
-button:hover {
-  background:#ff1a1a;
-  transform:scale(1.05);
-  box-shadow:0 8px 20px rgba(255,77,77,0.6);
-}
-.back-btn {
-  background:#aaa;
-  margin-top:12px;
-}
+body { margin:0; font-family: 'Segoe UI', sans-serif; background:linear-gradient(135deg,#ff9a9e,#fad0c4); display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.order-container { background:#fff; border-radius:20px; box-shadow:0 12px 30px rgba(0,0,0,0.2); padding:35px; max-width:450px; width:100%; text-align:center; animation: fadeIn 1s ease-in-out; }
+h1 { color:#ff4d4d; margin-bottom:15px; font-size:28px; }
+p.subtitle { font-size:14px; color:#777; margin-bottom:25px; }
+input { width:90%; padding:12px; margin:10px 0; border-radius:10px; border:1px solid #ccc; font-size:16px; transition:0.2s; }
+input:focus { border-color:#ff4d4d; outline:none; box-shadow:0 0 8px rgba(255,77,77,0.4); }
+button { background:#ff4d4d; color:white; border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-size:18px; margin-top:15px; transition:transform 0.2s, background 0.3s; }
+button:hover { background:#ff1a1a; transform:scale(1.05); }
+.back-btn { background:#aaa; margin-top:10px; }
 .back-btn:hover { background:#888; }
-
-.notice {
-  margin-top:20px;
-  font-size:14px;
-  color:#555;
-}
-
-@media(max-width:500px){
-  .order-container { padding:25px 15px; }
-  input{ width:95%; }
-}
+.notice { margin-top:20px; font-size:14px; color:#555; }
+@media(max-width:500px){ .order-container { padding:20px; } input{ width:95%; } }
+@keyframes fadeIn { from{opacity:0; transform:translateY(-20px);} to{opacity:1; transform:translateY(0);} }
 </style>
 </head>
 <body>
 
 <div class="order-container">
-  <h1>PaperCraft Order</h1>
-  <div id="selectedProduct"></div>
+    <h1>PaperCraft Order</h1>
+    <p class="subtitle">Fill in your details below to confirm your order.</p>
 
-  <form id="orderForm">
-    <input type="text" id="name" name="name" placeholder="Your Name" required>
-    <input type="text" id="class" name="class" placeholder="Class" required>
-    <input type="text" id="phone" name="phone" placeholder="Phone Number (optional)">
-    <input type="hidden" id="product" name="product">
-    <input type="hidden" id="type" name="type">
-    <input type="hidden" id="price" name="price">
-    <button type="button" onclick="sendAndRedirect()">Order</button>
-  </form>
+    <form id="orderForm">
+        <input type="text" id="name" name="name" placeholder="Your Name" required>
+        <input type="text" id="class" name="class" placeholder="Class" required>
+        <input type="text" id="phone" name="phone" placeholder="Phone Number (optional)">
+        <input type="hidden" id="product" name="product">
+        <input type="hidden" id="type" name="type">
+        <input type="hidden" id="price" name="price">
+        <button type="button" onclick="sendOrder()">Order</button>
+    </form>
 
-  <button class="back-btn" onclick="window.history.back()">← Back to Store</button>
+    <button class="back-btn" onclick="window.history.back()">← Back to Store</button>
 
-  <div class="notice">
-    After ordering, you will be redirected to the order confirmation page.
-  </div>
+    <div class="notice">
+        We will talk to you in school for confirmation. Please try not to submit multiple times.
+    </div>
 </div>
 
 <script>
-const webhookURL = "https://discord.com/api/webhooks/1422839520977621012/dmCTctd81k-0KjhaTjHkBY80BM4qgAzV2amKGZy856J2xzg8-fIQ_TukZfnxbUGJvwVI";
-
+// get product details from URL
 document.addEventListener("DOMContentLoaded", function() {
-  const params = new URLSearchParams(window.location.search);
-  const product = params.get('product') || '';
-  const type = params.get('type') || '';
-  const price = params.get('price') || '';
-
-  document.getElementById('product').value = product;
-  document.getElementById('type').value = type;
-  document.getElementById('price').value = price;
-
-  document.getElementById('selectedProduct').innerText = `Selected: ${product} (${type}) - ₹${price}`;
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById('product').value = params.get('product') || '';
+    document.getElementById('type').value = params.get('type') || '';
+    document.getElementById('price').value = params.get('price') || '';
 });
 
-function sendAndRedirect() {
-  const name = document.getElementById('name').value.trim();
-  const cls = document.getElementById('class').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const product = document.getElementById('product').value;
-  const type = document.getElementById('type').value;
-  const price = document.getElementById('price').value;
+// generate tracking ID
+function generateTrackingID() {
+  return "ORD-" + Math.floor(100000 + Math.random() * 900000); // e.g. ORD-123456
+}
 
-  if(!name || !cls){
-    alert("Please fill in Name and Class.");
-    return;
-  }
+function sendOrder() {
+    const name = document.getElementById('name').value.trim();
+    const cls = document.getElementById('class').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const product = document.getElementById('product').value;
+    const type = document.getElementById('type').value;
+    const price = document.getElementById('price').value;
 
-  // Send order to Discord
-  const content = `📦 **New Order**\n**Name:** ${name}\n**Class:** ${cls}\n**Phone:** ${phone || 'N/A'}\n**Product:** ${product}\n**Type:** ${type}\n**Price:** ₹${price}`;
-  
-  fetch(webhookURL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ content })
-  }).then(response => {
-    if(response.ok){
-      // Redirect to order confirmation page
-      const query = `?name=${encodeURIComponent(name)}&class=${encodeURIComponent(cls)}&phone=${encodeURIComponent(phone)}&product=${encodeURIComponent(product)}&type=${encodeURIComponent(type)}&price=${encodeURIComponent(price)}`;
-      window.location.href = "OrderConfirmation.html" + query;
-    } else {
-      alert("Failed to send order. Please try again.");
+    if(!name || !cls){
+        alert("Please fill in Name and Class.");
+        return;
     }
-  }).catch(error => {
-    console.error(error);
-    alert("Error sending order. Try again.");
-  });
+
+    const trackingID = generateTrackingID();
+
+    // send to discord
+    const orderDetails = {
+        content: `📦 **New Order Received**\n👤 Name: ${name}\n🏫 Class: ${cls}\n📱 Phone: ${phone || "Not provided"}\n📌 Product: ${product}\n🔖 Type: ${type}\n💰 Price: ${price}\n🆔 Tracking ID: ${trackingID}`
+    };
+
+    fetch("YOUR_DISCORD_WEBHOOK_URL", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderDetails)
+    });
+
+    // redirect to confirmation
+    window.location.href = `OrderConfirmation.html?tracking=${trackingID}&product=${product}&price=${price}`;
 }
 </script>
 
