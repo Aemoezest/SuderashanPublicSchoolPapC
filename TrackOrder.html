@@ -4,115 +4,142 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Track Your Order</title>
-
 <style>
-body { 
-  margin:0; 
-  font-family:'Segoe UI',sans-serif; 
-  background:linear-gradient(135deg,#667eea,#764ba2); 
-  display:flex; 
-  justify-content:center; 
-  align-items:center; 
-  min-height:100vh; 
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
 }
+
 .track-container {
-  background:#fff; 
-  border-radius:20px; 
-  box-shadow:0 12px 30px rgba(0,0,0,0.3); 
-  padding:35px; 
-  max-width:500px; 
-  width:100%; 
-  text-align:center; 
-  animation: fadeIn 1s ease-in-out; 
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    padding: 30px;
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    animation: fadeIn 0.7s ease;
 }
+
 h1 {
-  color:#333; 
-  margin-bottom:20px; 
+    color: #ff4d4d;
+    margin-bottom: 20px;
 }
+
 input {
-  padding:12px; 
-  width:80%; 
-  font-size:16px; 
-  border:2px solid #ddd; 
-  border-radius:10px; 
-  outline:none; 
-  margin-bottom:15px; 
-  transition: border 0.3s; 
+    width: 90%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
 }
-input:focus {
-  border-color:#667eea; 
-}
+
 button {
-  background:#667eea; 
-  color:white; 
-  border:none; 
-  padding:12px 20px; 
-  border-radius:10px; 
-  cursor:pointer; 
-  font-size:18px; 
-  transition: transform 0.2s, background 0.3s; 
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 15px;
+    transition: background 0.3s;
 }
+
 button:hover {
-  background:#5a67d8; 
-  transform:scale(1.05); 
+    background: #ff1a1a;
 }
-.status-box {
-  margin-top:20px; 
-  padding:20px; 
-  border-radius:12px; 
-  font-size:18px; 
-  display:none; 
+
+.back-btn {
+    background: #aaa;
+    margin-top: 10px;
 }
-.status-active {
-  background:#e6ffed; 
-  color:#1b8a3d; 
-  border:2px solid #1b8a3d; 
+
+.back-btn:hover {
+    background: #888;
 }
-.status-cancelled {
-  background:#ffe6e6; 
-  color:#d62828; 
-  border:2px solid #d62828; 
+
+.status {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #333;
 }
-@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+@media(max-width:500px){
+    .track-container { padding: 20px; }
+    input{ width:95%; }
+}
 </style>
 </head>
 <body>
 
 <div class="track-container">
-  <h1>📦 Track Your Order</h1>
-  <input type="text" id="trackInput" placeholder="Enter Tracking ID">
-  <br>
-  <button onclick="checkOrder()">Check Status</button>
-  
-  <div id="statusBox" class="status-box"></div>
+    <h1>Track Your Order</h1>
+    <p>Enter your tracking ID below to see the status of your order:</p>
+    <input type="text" id="trackingId" placeholder="Tracking ID">
+    <button onclick="checkStatus()">Check Status</button>
+    <div class="status" id="statusMessage"></div>
+    <button class="back-btn" onclick="window.location.href='index.html'">← Back to Store</button>
 </div>
 
 <script>
-// Mock orders (in real setup, this would come from database or backend)
-const mockOrders = {
-  "A12345": { product: "Naruto Model", status: "Active" },
-  "B67890": { product: "Gojo Satoru Figure", status: "Cancelled" }
-};
+const discordWebhook = "https://discord.com/api/webhooks/1422839520977621012/dmCTctd81k-0KjhaTjHkBY80BM4qgAzV2amKGZy856J2xzg8-fIQ_TukZfnxbUGJvwVI";
 
-function checkOrder() {
-  const trackingID = document.getElementById("trackInput").value.trim();
-  const statusBox = document.getElementById("statusBox");
+function checkStatus() {
+    const trackingId = document.getElementById('trackingId').value.trim();
+    const statusDiv = document.getElementById('statusMessage');
 
-  if(trackingID in mockOrders) {
-    const order = mockOrders[trackingID];
-    statusBox.style.display = "block";
-    if(order.status === "Active") {
-      statusBox.className = "status-box status-active";
-      statusBox.innerHTML = `✅ Order <b>${trackingID}</b> for <b>${order.product}</b> is <b>Active</b>. It will arrive in ~5 days.`;
-    } else {
-      statusBox.className = "status-box status-cancelled";
-      statusBox.innerHTML = `❌ Order <b>${trackingID}</b> for <b>${order.product}</b> was <b>Cancelled</b>.`;
+    if(!trackingId) {
+        alert("Please enter a Tracking ID.");
+        return;
     }
-  } else {
-    statusBox.style.display = "block";
-    statusBox.className = "status-box status-cancelled";
-    statusBox.innerHTML = `⚠️ No order found with Tracking ID: <b>${trackingID}</b>.`;
-  }
+
+    // For demo purposes, we just show a generic status.
+    // You could implement a database or file to track real orders.
+    statusDiv.innerHTML = `Your order <strong>${trackingId}</strong> is currently <strong>Active</strong>.`;
+
+    // Add a cancel button dynamically
+    if(!document.getElementById('cancelBtn')) {
+        const cancelBtn = document.createElement('button');
+        cancelBtn.id = 'cancelBtn';
+        cancelBtn.innerText = "Cancel Order";
+        cancelBtn.style.marginTop = "15px";
+        cancelBtn.onclick = function() { cancelOrder(trackingId); };
+        statusDiv.appendChild(document.createElement('br'));
+        statusDiv.appendChild(cancelBtn);
+    }
+}
+
+function cancelOrder(trackingId) {
+    if(!confirm("Are you sure you want to cancel this order?")) return;
+
+    // Send cancellation to Discord
+    fetch(discordWebhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: `Order Cancelled: Tracking ID ${trackingId}` })
+    })
+    .then(res => {
+        alert("Your order has been marked as cancelled. Redirecting to store.");
+        window.location.href = 'index.html';
+    })
+    .catch(err => {
+        alert("Failed to cancel the order. Try again.");
+        console.error(err);
+    });
 }
 </script>
 
