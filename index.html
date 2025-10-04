@@ -1,225 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PaperCraft Models</title>
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PaperCraft Models</title>
+<style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #f6d365, #fda085);
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background: #f5f5f5;
+        color: #333;
     }
-    header {
-      text-align: center;
-      padding: 20px;
-      color: white;
-      background: rgba(0,0,0,0.6);
+
+    /* Top banner */
+    .banner {
+        background: linear-gradient(90deg, #ff4d4d, #ff9900);
+        color: white;
+        text-align: center;
+        padding: 50px 20px;
+        font-size: 42px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        position: relative;
     }
-    header h1 {
-      font-size: 2.5em;
-      margin: 0;
+
+    .subtitle {
+        font-size: 18px;
+        font-weight: normal;
+        margin-top: 10px;
+        color: #fffdd0;
     }
-    header p {
-      font-size: 14px;
-      margin: 5px 0 0;
-      color: #ddd;
+
+    /* Track Order Button (Top-Right) */
+    .track-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(90deg, #4facfe, #00f2fe);
+        color: white;
+        padding: 12px 22px;
+        border-radius: 25px;
+        font-weight: bold;
+        text-decoration: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+        z-index: 1000;
     }
+    .track-btn:hover {
+        background: linear-gradient(90deg, #00f2fe, #4facfe);
+        transform: scale(1.05);
+    }
+
+    /* Layout container */
+    .container {
+        display: flex;
+        max-width: 1400px;
+        margin: auto;
+        padding: 30px;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    /* Vertical Tabs */
     .tabs {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
+        display: flex;
+        flex-direction: column;
+        width: 180px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        padding: 10px 0;
+        height: fit-content;
     }
+
     .tab {
-      padding: 12px 25px;
-      margin: 0 8px;
-      border: none;
-      border-radius: 20px;
-      font-size: 16px;
-      cursor: pointer;
-      background: white;
-      color: #333;
-      transition: all 0.3s ease;
+        padding: 15px 20px;
+        margin: 5px 10px;
+        cursor: pointer;
+        border-left: 5px solid transparent;
+        font-size: 18px;
+        border-radius: 8px;
+        transition: all 0.3s;
+        text-align: center;
     }
+
+    .tab:hover {
+        background: #ffefef;
+    }
+
     .tab.active {
-      background: #ff4d4d;
-      color: white;
-      font-weight: bold;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        background: #ff4d4d;
+        color: white;
+        border-left: 5px solid #ff9900;
+        font-weight: bold;
     }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      padding: 20px;
+
+    /* Products grid */
+    .products {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 25px;
+        display: none; 
     }
-    .card {
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-      padding: 15px;
-      text-align: center;
-      transition: transform 0.3s;
+
+    .products.active {
+        display: grid;
     }
-    .card:hover {
-      transform: translateY(-5px);
+
+    .product-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        text-align: center;
+        transition: transform 0.3s, box-shadow 0.3s;
     }
-    .card img {
-      width: 100%;
-      border-radius: 12px;
-      max-height: 200px;
-      object-fit: cover;
+
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.2);
     }
-    .card h3 {
-      margin: 12px 0 8px;
-      font-size: 18px;
-      color: #333;
+
+    .product-card img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 12px;
+        transition: transform 0.3s;
     }
-    .card button {
-      background: #ff4d4d;
-      border: none;
-      color: white;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 15px;
-      cursor: pointer;
-      transition: background 0.3s ease;
+
+    .product-card img:hover {
+        transform: scale(1.05);
     }
-    .card button:hover {
-      background: #e60000;
+
+    .product-card h3 {
+        margin: 15px 0 8px 0;
+        font-size: 22px;
     }
-    .track-order-container {
-      text-align: center;
-      margin: 30px 0;
+
+    .product-card button {
+        background: #ff4d4d;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 12px;
+        font-size: 18px;
+        transition: background 0.3s;
     }
-    .track-order-container button {
-      background: #4caf50;
-      color: white;
-      padding: 14px 25px;
-      border: none;
-      border-radius: 10px;
-      font-size: 18px;
-      cursor: pointer;
-      transition: transform 0.2s ease, background 0.3s;
+
+    .product-card button:hover {
+        background: #ff1a1a;
     }
-    .track-order-container button:hover {
-      background: #388e3c;
-      transform: scale(1.05);
-    }
+
     /* Disclaimer */
     .disclaimer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      background: #000;
-      color: white;
-      overflow: hidden;
-      height: 35px;
-      display: flex;
-      align-items: center;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: #000;
+        color: white;
+        overflow: hidden;
+        height: 35px;
+        display: flex;
+        align-items: center;
     }
     .disclaimer p {
-      display: inline-block;
-      white-space: nowrap;
-      padding-left: 100%;
-      animation: scrollText 15s linear infinite;
-      font-size: 14px;
+        display: inline-block;
+        white-space: nowrap;
+        padding-left: 100%;
+        animation: scrollText 25s linear infinite;
+        font-size: 14px;
     }
     @keyframes scrollText {
-      from { transform: translateX(100%); }
-      to { transform: translateX(-100%); }
+        from { transform: translateX(100%); }
+        to { transform: translateX(-100%); }
     }
-  </style>
+
+    /* Responsive for mobile */
+    @media(max-width: 900px) {
+        .container {
+            flex-direction: column;
+        }
+        .tabs {
+            flex-direction: row;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            border-left: none;
+            border-bottom: 3px solid transparent;
+        }
+        .tab.active {
+            border-left: none;
+            border-bottom: 3px solid #ff9900;
+        }
+    }
+</style>
 </head>
 <body>
 
-<header>
-  <h1>PaperCraft Models</h1>
-  <p>Made and Sold by Arman Yasir Quddush</p>
-</header>
-
-<div class="tabs">
-  <button class="tab active" onclick="showSection('fully')">Fully Made</button>
-  <button class="tab" onclick="showSection('templates')">Templates</button>
+<div class="banner">
+    PaperCraft Models
+    <div class="subtitle">Made and Sold by Arman Yasir Quddush</div>
 </div>
 
-<div id="fully" class="grid">
-  <!-- Fully Made Products -->
-  <div class="card">
-    <img src="gojo_FullyMade.jpg" alt="Gojo Satoru">
-    <h3>Gojo Satoru</h3>
-    <button onclick="buyNow('Gojo Satoru','Fully Made',20)">Buy Now</button>
-  </div>
-  <div class="card">
-    <img src="sukuna_FullyMade.jpg" alt="Sukuna Ryomen">
-    <h3>Sukuna Ryomen</h3>
-    <button onclick="buyNow('Sukuna Ryomen','Fully Made',20)">Buy Now</button>
-  </div>
-  <div class="card">
-    <img src="rengoku_FullyMade.jpg" alt="Kyojuro Rengoku">
-    <h3>Kyojuro Rengoku</h3>
-    <button onclick="buyNow('Kyojuro Rengoku','Fully Made',20)">Buy Now</button>
-  </div>
-  <div class="card">
-    <img src="anya_FullyMade.jpg" alt="Anya Forger">
-    <h3>Anya Forger</h3>
-    <button onclick="buyNow('Anya Forger','Fully Made',20)">Buy Now</button>
-  </div>
-  <div class="card">
-    <img src="yor_FullyMade.jpg" alt="Yor Forger">
-    <h3>Yor Forger</h3>
-    <button onclick="buyNow('Yor Forger','Fully Made',20)">Buy Now</button>
-  </div>
-</div>
+<!-- Track Order Button -->
+<a href="trackorder.html" class="track-btn">📦 Track Order</a>
 
-<div id="templates" class="grid" style="display:none;">
-  <!-- Template Products -->
-  <div class="card">
-    <img src="gojo_Template.jpg" alt="Gojo Satoru Template">
-    <h3>Gojo Satoru</h3>
-    <button onclick="buyNow('Gojo Satoru','Template',10)">Buy Now</button>
-  </div>
-  <div class="card">
-    <img src="sukuna_Template.jpg" alt="Sukuna Ryomen Template">
-    <h3>Sukuna Ryomen</h3>
-    <button onclick="buyNow('Sukuna Ryomen','Template',10)">Buy Now</button>
-  </div>
-  <div class="card">
-    <img src="rengoku_Template.jpg" alt="Kyojuro Rengoku Template">
-    <h3>Kyojuro Rengoku</h3>
-    <button onclick="buyNow('Kyojuro Rengoku','Template',10)">Buy Now</button>
-  </div>
-  <div class="card">
-    <img src="anya_Template.jpg" alt="Anya Forger Template">
-    <h3>Anya Forger</h3>
-    <button onclick="buyNow('Anya Forger','Template',10)">Buy Now</button>
-  </div>
-  <div class="card">
-    <img src="yor_Template.jpg" alt="Yor Forger Template">
-    <h3>Yor Forger</h3>
-    <button onclick="buyNow('Yor Forger','Template',10)">Buy Now</button>
-  </div>
-</div>
+<div class="container">
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('fullymade', this)">Fully Made</div>
+        <div class="tab" onclick="showTab('templates', this)">Templates</div>
+    </div>
 
-<div class="track-order-container">
-  <button onclick="window.location.href='trackorder.html'">📦 Track Your Order</button>
+    <!-- Fully Made Products -->
+    <div class="products active" id="fullymade">
+        <div class="product-card">
+            <img src="gojo_FullyMade.jpg" alt="Gojo Satoru">
+            <h3>Gojo Satoru</h3>
+            <button onclick="buyNow('Gojo Satoru','Fully Made',20)">Buy Now</button>
+        </div>
+        <div class="product-card">
+            <img src="sukuna_FullyMade.jpg" alt="Sukuna Ryomen">
+            <h3>Sukuna Ryomen</h3>
+            <button onclick="buyNow('Sukuna Ryomen','Fully Made',20)">Buy Now</button>
+        </div>
+    </div>
+
+    <!-- Templates Products -->
+    <div class="products" id="templates">
+        <div class="product-card">
+            <img src="gojo_Template.jpg" alt="Gojo Template">
+            <h3>Gojo Satoru</h3>
+            <button onclick="buyNow('Gojo Satoru','Template',10)">Buy Now</button>
+        </div>
+        <div class="product-card">
+            <img src="sukuna_Template.jpg" alt="Sukuna Template">
+            <h3>Sukuna Ryomen</h3>
+            <button onclick="buyNow('Sukuna Ryomen','Template',10)">Buy Now</button>
+        </div>
+    </div>
 </div>
 
 <div class="disclaimer">
-  <p>Disclaimer: Website only used to sell things in Suderashan Public School only</p>
+    <p>Disclaimer: Website only used to sell things in Suderashan Public School only</p>
 </div>
 
 <script>
-  function showSection(section) {
-    document.getElementById('fully').style.display = section === 'fully' ? 'grid' : 'none';
-    document.getElementById('templates').style.display = section === 'templates' ? 'grid' : 'none';
+function showTab(tabId, element) {
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-    document.querySelector(`.tab[onclick="showSection('${section}')"]`).classList.add('active');
-  }
+    element.classList.add('active');
 
-  function buyNow(product, type, price) {
+    document.querySelectorAll('.products').forEach(section => section.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+}
+
+function buyNow(product, type, price) {
     window.location.href = `payment.html?product=${encodeURIComponent(product)}&type=${encodeURIComponent(type)}&price=${price}`;
-  }
+}
 </script>
 
 </body>
