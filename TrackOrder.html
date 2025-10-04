@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Your Order</title>
+
+<style>
+body { 
+  margin:0; 
+  font-family:'Segoe UI',sans-serif; 
+  background:linear-gradient(135deg,#667eea,#764ba2); 
+  display:flex; 
+  justify-content:center; 
+  align-items:center; 
+  min-height:100vh; 
+}
+.track-container {
+  background:#fff; 
+  border-radius:20px; 
+  box-shadow:0 12px 30px rgba(0,0,0,0.3); 
+  padding:35px; 
+  max-width:500px; 
+  width:100%; 
+  text-align:center; 
+  animation: fadeIn 1s ease-in-out; 
+}
+h1 {
+  color:#333; 
+  margin-bottom:20px; 
+}
+input {
+  padding:12px; 
+  width:80%; 
+  font-size:16px; 
+  border:2px solid #ddd; 
+  border-radius:10px; 
+  outline:none; 
+  margin-bottom:15px; 
+  transition: border 0.3s; 
+}
+input:focus {
+  border-color:#667eea; 
+}
+button {
+  background:#667eea; 
+  color:white; 
+  border:none; 
+  padding:12px 20px; 
+  border-radius:10px; 
+  cursor:pointer; 
+  font-size:18px; 
+  transition: transform 0.2s, background 0.3s; 
+}
+button:hover {
+  background:#5a67d8; 
+  transform:scale(1.05); 
+}
+.status-box {
+  margin-top:20px; 
+  padding:20px; 
+  border-radius:12px; 
+  font-size:18px; 
+  display:none; 
+}
+.status-active {
+  background:#e6ffed; 
+  color:#1b8a3d; 
+  border:2px solid #1b8a3d; 
+}
+.status-cancelled {
+  background:#ffe6e6; 
+  color:#d62828; 
+  border:2px solid #d62828; 
+}
+@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+</style>
+</head>
+<body>
+
+<div class="track-container">
+  <h1>📦 Track Your Order</h1>
+  <input type="text" id="trackInput" placeholder="Enter Tracking ID">
+  <br>
+  <button onclick="checkOrder()">Check Status</button>
+  
+  <div id="statusBox" class="status-box"></div>
+</div>
+
+<script>
+// Mock orders (in real setup, this would come from database or backend)
+const mockOrders = {
+  "A12345": { product: "Naruto Model", status: "Active" },
+  "B67890": { product: "Gojo Satoru Figure", status: "Cancelled" }
+};
+
+function checkOrder() {
+  const trackingID = document.getElementById("trackInput").value.trim();
+  const statusBox = document.getElementById("statusBox");
+
+  if(trackingID in mockOrders) {
+    const order = mockOrders[trackingID];
+    statusBox.style.display = "block";
+    if(order.status === "Active") {
+      statusBox.className = "status-box status-active";
+      statusBox.innerHTML = `✅ Order <b>${trackingID}</b> for <b>${order.product}</b> is <b>Active</b>. It will arrive in ~5 days.`;
+    } else {
+      statusBox.className = "status-box status-cancelled";
+      statusBox.innerHTML = `❌ Order <b>${trackingID}</b> for <b>${order.product}</b> was <b>Cancelled</b>.`;
+    }
+  } else {
+    statusBox.style.display = "block";
+    statusBox.className = "status-box status-cancelled";
+    statusBox.innerHTML = `⚠️ No order found with Tracking ID: <b>${trackingID}</b>.`;
+  }
+}
+</script>
+
+</body>
+</html>
