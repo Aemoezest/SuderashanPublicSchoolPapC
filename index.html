@@ -139,6 +139,11 @@
         font-size: 22px;
     }
 
+    .product-card p {
+        font-size: 18px;
+        margin: 5px 0;
+    }
+
     .product-card button {
         background: #ff4d4d;
         color: white;
@@ -153,30 +158,6 @@
 
     .product-card button:hover {
         background: #ff1a1a;
-    }
-
-    /* Disclaimer */
-    .disclaimer {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        background: #000;
-        color: white;
-        overflow: hidden;
-        height: 35px;
-        display: flex;
-        align-items: center;
-    }
-    .disclaimer p {
-        display: inline-block;
-        white-space: nowrap;
-        padding-left: 100%;
-        animation: scrollText 25s linear infinite;
-        font-size: 14px;
-    }
-    @keyframes scrollText {
-        from { transform: translateX(100%); }
-        to { transform: translateX(-100%); }
     }
 
     /* Responsive for mobile */
@@ -224,26 +205,31 @@
         <div class="product-card">
             <img src="gojo_FullyMade.jpg" alt="Gojo Satoru">
             <h3>Gojo Satoru</h3>
+            <p>₹20</p>
             <button onclick="buyNow('Gojo Satoru','Fully Made',20)">Buy Now</button>
         </div>
         <div class="product-card">
             <img src="sukuna_FullyMade.jpg" alt="Sukuna Ryomen">
             <h3>Sukuna Ryomen</h3>
+            <p>₹20</p>
             <button onclick="buyNow('Sukuna Ryomen','Fully Made',20)">Buy Now</button>
         </div>
         <div class="product-card">
             <img src="rengoku_FullyMade.jpg" alt="Kyojuro Rengoku">
             <h3>Kyojuro Rengoku</h3>
+            <p>₹20</p>
             <button onclick="buyNow('Kyojuro Rengoku','Fully Made',20)">Buy Now</button>
         </div>
         <div class="product-card">
             <img src="anya_FullyMade.jpg" alt="Anya Forger">
             <h3>Anya Forger</h3>
+            <p>₹20</p>
             <button onclick="buyNow('Anya Forger','Fully Made',20)">Buy Now</button>
         </div>
         <div class="product-card">
             <img src="yor_FullyMade.jpg" alt="Yor Forger">
             <h3>Yor Forger</h3>
+            <p>₹20</p>
             <button onclick="buyNow('Yor Forger','Fully Made',20)">Buy Now</button>
         </div>
     </div>
@@ -253,48 +239,37 @@
         <div class="product-card">
             <img src="gojo_Template.jpg" alt="Gojo Satoru Template">
             <h3>Gojo Satoru</h3>
+            <p>₹10</p>
             <button onclick="buyNow('Gojo Satoru','Template',10)">Buy Now</button>
         </div>
         <div class="product-card">
             <img src="sukuna_Template.jpg" alt="Sukuna Ryomen Template">
             <h3>Sukuna Ryomen</h3>
+            <p>₹10</p>
             <button onclick="buyNow('Sukuna Ryomen','Template',10)">Buy Now</button>
         </div>
         <div class="product-card">
             <img src="rengoku_Template.jpg" alt="Kyojuro Rengoku Template">
             <h3>Kyojuro Rengoku</h3>
+            <p>₹10</p>
             <button onclick="buyNow('Kyojuro Rengoku','Template',10)">Buy Now</button>
         </div>
         <div class="product-card">
             <img src="anya_Template.jpg" alt="Anya Forger Template">
             <h3>Anya Forger</h3>
+            <p>₹10</p>
             <button onclick="buyNow('Anya Forger','Template',10)">Buy Now</button>
         </div>
         <div class="product-card">
             <img src="yor_Template.jpg" alt="Yor Forger Template">
             <h3>Yor Forger</h3>
+            <p>₹10</p>
             <button onclick="buyNow('Yor Forger','Template',10)">Buy Now</button>
         </div>
     </div>
 </div>
 
-<div class="disclaimer">
-    <p>Disclaimer: Website only used to sell things in Suderashan Public School only</p>
-</div>
-
 <script>
 function showTab(tabId, element) {
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-    element.classList.add('active');
-
-    document.querySelectorAll('.products').forEach(section => section.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-}
-
-function buyNow(product, type, price) {
-    window.location.href = `payment.html?product=${encodeURIComponent(product)}&type=${encodeURIComponent(type)}&price=${price}`;
-}
-</script>
-
-</body>
-</html>
+    element.classList.add
