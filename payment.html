@@ -3,178 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Complete Your Order</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<title>PaperCraft Order</title>
+
 <style>
-  body {
-    margin: 0;
-    font-family: "Poppins", sans-serif;
-    background: radial-gradient(circle at top left, #1e1e1e, #111);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-  }
+body { 
+    margin:0; font-family:'Arial',sans-serif; 
+    background: #f5f5f5; display:flex; justify-content:center; align-items:center; 
+    min-height:100vh; padding:20px; 
+}
 
-  .order-container {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 20px;
-    padding: 40px;
-    width: 90%;
-    max-width: 420px;
-    text-align: center;
-    box-shadow: 0 0 25px rgba(255, 255, 255, 0.08);
-    animation: fadeIn 1s ease forwards;
-  }
+.order-container { 
+    background: #fff; border-radius: 15px; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+    padding: 30px; max-width: 450px; width: 100%; text-align:center; position:relative; 
+    animation: fadeIn 0.8s ease-out;
+}
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-30px);}
+    to { opacity: 1; transform: translateY(0);}
+}
 
-  h1 {
-    color: #ff4d4d;
-    font-size: 1.8em;
-    margin-bottom: 20px;
-  }
+h1 { 
+    color:#ff4d4d; margin-bottom:15px; 
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
 
-  input {
-    width: 90%;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 8px;
-    border: none;
-    font-size: 16px;
-    outline: none;
-  }
+input { 
+    width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; 
+    border: 1px solid #ccc; font-size: 16px; 
+}
 
-  button {
-    background: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-    margin-top: 15px;
-    transition: background 0.3s, transform 0.2s;
-  }
+button { 
+    background: #ff4d4d; color:white; border:none; 
+    padding:12px 20px; border-radius:8px; cursor:pointer; 
+    font-size:18px; margin-top:15px; transition: all 0.3s;
+}
 
-  button:hover {
-    background: #ff1a1a;
-    transform: scale(1.05);
-  }
+button:hover { background: #ff1a1a; transform: scale(1.05); }
 
-  .back-btn {
-    background: #666;
-    margin-top: 10px;
-  }
+.back-btn { background: #aaa; margin-top:10px; }
+.back-btn:hover { background:#888; }
 
-  .back-btn:hover {
-    background: #444;
-  }
+.notice { margin-top:15px; font-size:14px; color:#555; }
 
-  .details {
-    margin: 20px 0;
-    background: rgba(255,255,255,0.1);
-    padding: 15px;
-    border-radius: 10px;
-    font-size: 0.95em;
-    color: #ddd;
-  }
+.product-info { font-size:16px; color:#333; margin:10px 0; }
 
-  .notice {
-    margin-top: 20px;
-    font-size: 14px;
-    color: #ccc;
-  }
-
+@media(max-width:500px){ 
+    .order-container { padding:20px; } 
+    input{ width:95%; } 
+}
 </style>
 </head>
 <body>
 
 <div class="order-container">
-  <h1>Complete Your Order</h1>
+    <h1>PaperCraft Order</h1>
+    <div class="product-info" id="selectedItem"></div>
 
-  <div class="details" id="itemDetails">Loading item details...</div>
+    <form id="orderForm">
+        <input type="text" id="name" placeholder="Your Name" required>
+        <input type="text" id="class" placeholder="Class" required>
+        <input type="text" id="phone" placeholder="Phone Number (optional)">
+        <input type="hidden" id="product">
+        <input type="hidden" id="type">
+        <input type="hidden" id="price">
+        <input type="hidden" id="trackingId">
+        <button type="button" onclick="sendOrder()">Order</button>
+    </form>
 
-  <form id="orderForm">
-    <input type="text" id="name" placeholder="Your Name" required>
-    <input type="text" id="class" placeholder="Class" required>
-    <input type="text" id="phone" placeholder="Phone Number (optional)">
-    <button type="button" onclick="sendOrder()">Place Order</button>
-  </form>
+    <button class="back-btn" onclick="window.history.back()">← Back to Store</button>
 
-  <button class="back-btn" onclick="window.location.href='index.html'">← Back to Store</button>
-
-  <div class="notice">
-    We will confirm your order in school. Please do not submit multiple times.
-  </div>
+    <div class="notice">
+        • Your order will be ready around 5 days after confirmation.<br>
+        • Please note your tracking ID and keep it safe.<br>
+        • Thank you!
+    </div>
 </div>
 
 <script>
-  const webhookURL = "https://discord.com/api/webhooks/1422839520977621012/dmCTctd81k-0KjhaTjHkBY80BM4qgAzV2amKGZy856J2xzg8-fIQ_TukZfnxbUGJvwVI";
+document.addEventListener("DOMContentLoaded", function() {
+    // Get URL params
+    const params = new URLSearchParams(window.location.search);
+    const product = params.get('product') || '';
+    const type = params.get('type') || '';
+    const price = params.get('price') || '';
 
-  let selectedItem = localStorage.getItem("selectedItem");
-  const itemDetails = document.getElementById("itemDetails");
+    // Generate random tracking ID
+    const trackingId = 'PC-' + Math.floor(Math.random()*1000000);
 
-  if (selectedItem) {
-    const prices = {
-      "Gojo Satoru": 20,
-      "Ryomen Sukuna": 18,
-      "Rengoku Kyojuro": 25,
-      "Anya Forger": 15,
-      "Yor Forger": 17
-    };
-    const price = prices[selectedItem] || 20;
-    itemDetails.innerHTML = `<strong>Selected:</strong> ${selectedItem}<br><strong>Price:</strong> ₹${price}`;
-  } else {
-    itemDetails.innerHTML = "⚠️ No item selected. Please go back and choose an item.";
-  }
+    // Fill hidden inputs
+    document.getElementById('product').value = product;
+    document.getElementById('type').value = type;
+    document.getElementById('price').value = price;
+    document.getElementById('trackingId').value = trackingId;
 
-  function generateTrackingID() {
-    return "TRK-" + Math.random().toString(36).substr(2, 8).toUpperCase();
-  }
+    // Show selected item info
+    document.getElementById('selectedItem').innerHTML = `
+        <strong>Item:</strong> ${product} (${type})<br>
+        <strong>Price:</strong> ₹${price}<br>
+        <strong>Tracking ID:</strong> Please note it down: ${trackingId}
+    `;
+});
 
-  function sendOrder() {
-    const name = document.getElementById("name").value.trim();
-    const cls = document.getElementById("class").value.trim();
-    const phone = document.getElementById("phone").value.trim();
+function sendOrder() {
+    const name = document.getElementById('name').value.trim();
+    const cls = document.getElementById('class').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const product = document.getElementById('product').value;
+    const type = document.getElementById('type').value;
+    const price = document.getElementById('price').value;
+    const trackingId = document.getElementById('trackingId').value;
 
-    if (!name || !cls || !selectedItem) {
-      alert("Please fill in your Name and Class, and make sure an item is selected.");
-      return;
-    }
+    if(!name || !cls) { alert("Please fill Name and Class"); return; }
 
-    const prices = {
-      "Gojo Satoru": 20,
-      "Ryomen Sukuna": 18,
-      "Rengoku Kyojuro": 25,
-      "Anya Forger": 15,
-      "Yor Forger": 17
-    };
-    const price = prices[selectedItem] || 20;
-
-    const trackingID = generateTrackingID();
-
-    const orderDetails = {
-      content: `📦 **New Order Received!**\n\n👤 Name: ${name}\n🏫 Class: ${cls}\n📞 Phone: ${phone || "Not provided"}\n🧩 Item: ${selectedItem}\n💰 Price: ₹${price}\n🔢 Tracking ID: ${trackingID}\n🕒 Status: Ordered`
-    };
+    // Discord Webhook
+    const webhookURL = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE";
+    const content = `📦 New Order!\n**Name:** ${name}\n**Class:** ${cls}\n**Phone:** ${phone || 'N/A'}\n**Product:** ${product}\n**Type:** ${type}\n**Price:** ₹${price}\n**Tracking ID:** ${trackingId}`;
 
     fetch(webhookURL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(orderDetails)
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content })
     })
     .then(() => {
-      localStorage.setItem("trackingID", trackingID);
-      window.location.href = "OrderConfirmation.html";
+        // redirect to confirmation page
+        window.location.href = `OrderConfirmation.html?tracking=${trackingId}&product=${encodeURIComponent(product)}&type=${encodeURIComponent(type)}&price=${price}`;
     })
-    .catch(() => {
-      alert("Failed to send order. Please try again.");
+    .catch(err => {
+        console.error(err);
+        alert("Failed to send order. Try again.");
     });
-  }
+}
 </script>
 
 </body>
