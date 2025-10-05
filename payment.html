@@ -2,152 +2,127 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Order Payment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment - Anime Figures</title>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #1e1e2f, #2e2e47);
+      background: linear-gradient(135deg, #141e30, #243b55);
       color: white;
-      margin: 0;
-      padding: 0;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      text-align: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
     }
-
     .container {
       background: rgba(255, 255, 255, 0.1);
-      padding: 30px;
       border-radius: 20px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-      width: 90%;
-      max-width: 400px;
-      animation: fadeIn 1s ease-in-out;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
+      padding: 40px;
+      text-align: center;
+      width: 400px;
+      animation: fadeInUp 0.8s ease;
     }
-
-    h1 {
-      font-size: 1.8em;
-      margin-bottom: 10px;
+    @keyframes fadeInUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
-
-    p {
-      font-size: 1em;
-      color: #ccc;
+    h2 { margin-bottom: 10px; color: #ffcb6b; }
+    label {
+      display: block;
+      margin-top: 15px;
+      color: #ddd;
+      text-align: left;
+      font-size: 14px;
     }
-
     input {
-      width: 90%;
+      width: 100%;
       padding: 10px;
-      margin: 10px 0;
+      margin-top: 5px;
       border-radius: 10px;
       border: none;
       outline: none;
-    }
-
-    button {
-      background: linear-gradient(90deg, #0072ff, #00c6ff);
-      border: none;
-      padding: 12px 20px;
+      background: rgba(255,255,255,0.2);
       color: white;
+      font-size: 14px;
+    }
+    input::placeholder { color: #aaa; }
+    button {
+      margin-top: 25px;
+      padding: 12px 25px;
+      border: none;
       border-radius: 10px;
       cursor: pointer;
-      font-size: 1em;
-      transition: all 0.3s ease;
-      margin: 8px;
+      font-weight: bold;
+      background: linear-gradient(45deg, #ff416c, #ff4b2b);
+      color: white;
+      transition: 0.3s ease;
     }
-
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px #00c6ff;
-    }
-
-    .back-btn {
-      background: #ff4b2b;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    button:hover { transform: scale(1.05); background: linear-gradient(45deg, #ff4b2b, #ff416c); }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Order Payment</h1>
-    <p id="orderDetails">Loading product details...</p>
+    <h2>Complete Your Order</h2>
+    <p id="selected-item">Loading your selection...</p>
+    <form id="paymentForm">
+      <label>Name</label>
+      <input type="text" id="name" placeholder="Enter your name" required>
 
-    <input type="text" id="buyerName" placeholder="Enter your name" />
-    <input type="text" id="buyerClass" placeholder="Enter your class (e.g. 6A)" />
-    <input type="text" id="buyerPhone" placeholder="Enter your phone number" />
+      <label>Class</label>
+      <input type="text" id="class" placeholder="Enter your class" required>
 
-    <button onclick="confirmPayment()">Confirm Order</button>
-    <button class="back-btn" onclick="goBack()">Cancel</button>
+      <label>Phone Number (Optional)</label>
+      <input type="text" id="phone" placeholder="Enter phone number (optional)">
+
+      <button type="submit">Place Order</button>
+    </form>
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const product = params.get("product");
-    const type = params.get("type");
-    const price = params.get("price");
+    // Load item name from localStorage
+    const selected = localStorage.getItem("selectedItem");
+    document.getElementById("selected-item").innerText = selected
+      ? `You selected: ${selected}`
+      : "No item selected.";
 
-    const detailsText = product && type && price 
-      ? `🧾 You are ordering: <strong>${product}</strong><br>Type: ${type}<br>Price: ₹${price}`
-      : "No order details found!";
-    document.getElementById("orderDetails").innerHTML = detailsText;
+    const webhookURL = "YOUR_DISCORD_WEBHOOK_URL_HERE";
 
-    function confirmPayment() {
-      const name = document.getElementById("buyerName").value.trim();
-      const buyerClass = document.getElementById("buyerClass").value.trim();
-      const phone = document.getElementById("buyerPhone").value.trim();
+    document.getElementById("paymentForm").addEventListener("submit", function(e) {
+      e.preventDefault();
 
-      if (!name || !buyerClass || !phone) {
-        alert("Please fill in all details before confirming!");
-        return;
-      }
+      const name = document.getElementById("name").value.trim();
+      const className = document.getElementById("class").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const item = selected || "Unknown Item";
 
-      // Generate random tracking ID
-      const trackingId = "TRK" + Math.floor(Math.random() * 1000000);
+      const trackingId = Math.random().toString(36).substring(2, 10).toUpperCase();
 
-      // Save order to localStorage
-      const order = {
-        name,
-        buyerClass,
-        phone,
-        product,
-        type,
-        price,
-        trackingId,
-        status: "active"
-      };
-      localStorage.setItem(trackingId, JSON.stringify(order));
+      // Save order info for tracking
+      const order = { name, className, phone, item, trackingId, status: "Active" };
+      localStorage.setItem(`order_${trackingId}`, JSON.stringify(order));
 
-      // Send order to Discord
-      const discordWebhook = "https://discord.com/api/webhooks/1422839520977621012/dmCTctd81k-0KjhaTjHkBY80BM4qgAzV2amKGZy856J2xzg8-fIQ_TukZfnxbUGJvwVI";
+      // Send to Discord
       const message = {
-        content: `📦 **New Order Received!**\n👤 Name: ${name}\n🏫 Class: ${buyerClass}\n📱 Phone: ${phone}\n🎁 Product: ${product}\n💠 Type: ${type}\n💰 Price: ₹${price}\n🆔 Tracking ID: ${trackingId}\n🕒 Status: *Active*`
+        content: `🛒 **New Order Placed!**
+**Name:** ${name}
+**Class:** ${className}
+**Phone:** ${phone || "Not provided"}
+**Item:** ${item}
+**Tracking ID:** ${trackingId}`
       };
 
-      fetch(discordWebhook, {
+      fetch(webhookURL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(message)
-      })
-      .then(() => {
-        // Redirect to confirmation page with correct file name
-        window.location.href = `OrderConfirmation.html?trackingId=${trackingId}&product=${encodeURIComponent(product)}&price=${price}`;
-      })
-      .catch(() => {
-        alert("Error sending to Discord. Please try again.");
       });
-    }
 
-    function goBack() {
-      window.location.href = "index.html";
-    }
+      // Redirect with tracking id
+      window.location.href = `OrderConfirmation.html?tracking=${trackingId}`;
+    });
   </script>
 </body>
 </html>
