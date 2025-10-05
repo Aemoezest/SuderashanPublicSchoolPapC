@@ -272,4 +272,16 @@
 <script>
 function showTab(tabId, element) {
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-    element.classList.add
+    element.classList.add('active');
+
+    document.querySelectorAll('.products').forEach(section => section.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+}
+
+function buyNow(product, type, price) {
+    window.location.href = `payment.html?product=${encodeURIComponent(product)}&type=${encodeURIComponent(type)}&price=${price}`;
+}
+</script>
+
+</body>
+</html>
