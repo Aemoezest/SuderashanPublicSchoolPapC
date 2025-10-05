@@ -49,7 +49,6 @@
     }
 
     button {
-      background: #00c6ff;
       background: linear-gradient(90deg, #0072ff, #00c6ff);
       border: none;
       padding: 12px 20px;
@@ -113,10 +112,23 @@
       // Generate random tracking ID
       const trackingId = "TRK" + Math.floor(Math.random() * 1000000);
 
+      // Save order to localStorage
+      const order = {
+        name,
+        buyerClass,
+        phone,
+        product,
+        type,
+        price,
+        trackingId,
+        status: "active"
+      };
+      localStorage.setItem(trackingId, JSON.stringify(order));
+
       // Send order to Discord
       const discordWebhook = "https://discord.com/api/webhooks/1422839520977621012/dmCTctd81k-0KjhaTjHkBY80BM4qgAzV2amKGZy856J2xzg8-fIQ_TukZfnxbUGJvwVI";
       const message = {
-        content: `📦 **New Order Received!**\n👤 Name: ${name}\n🏫 Class: ${buyerClass}\n📱 Phone: ${phone}\n🎁 Product: ${product}\n💠 Type: ${type}\n💰 Price: ₹${price}\n🆔 Tracking ID: ${trackingId}\n🕒 Status: *Pending Confirmation*`
+        content: `📦 **New Order Received!**\n👤 Name: ${name}\n🏫 Class: ${buyerClass}\n📱 Phone: ${phone}\n🎁 Product: ${product}\n💠 Type: ${type}\n💰 Price: ₹${price}\n🆔 Tracking ID: ${trackingId}\n🕒 Status: *Active*`
       };
 
       fetch(discordWebhook, {
@@ -125,8 +137,8 @@
         body: JSON.stringify(message)
       })
       .then(() => {
-        // Redirect to confirmation page with tracking ID
-        window.location.href = `orderconfirmation.html?trackingId=${trackingId}&product=${encodeURIComponent(product)}&price=${price}`;
+        // Redirect to confirmation page with correct file name
+        window.location.href = `OrderConfirmation.html?trackingId=${trackingId}&product=${encodeURIComponent(product)}&price=${price}`;
       })
       .catch(() => {
         alert("Error sending to Discord. Please try again.");
