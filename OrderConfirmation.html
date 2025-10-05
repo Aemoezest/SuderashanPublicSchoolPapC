@@ -6,57 +6,87 @@
 <title>Order Confirmation</title>
 <style>
 body { margin:0; font-family:Arial,sans-serif; background:#f5f5f5; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
-.confirm-container { background:#fff; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.15); padding:30px; max-width:500px; width:100%; text-align:center; position:relative; }
-h1 { color:#ff4d4d; margin-bottom:20px; }
-p { font-size:16px; margin:8px 0; color:#333; }
-button { background:#ff4d4d; color:white; border:none; padding:12px 20px; border-radius:8px; cursor:pointer; font-size:18px; margin:10px; transition:background 0.3s; }
+.confirm-container { background:#fff; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.15); padding:30px; max-width:500px; width:100%; text-align:center; position:relative; animation:fadeIn 1s; }
+h1 { color:#ff4d4d; margin-bottom:15px; }
+p { font-size:16px; margin:8px 0; }
+button { background:#ff4d4d; color:white; border:none; padding:12px 20px; border-radius:8px; cursor:pointer; font-size:16px; margin:10px; transition:background 0.3s; }
 button:hover { background:#ff1a1a; }
+.back-btn { background:#aaa; }
+.back-btn:hover { background:#888; }
+.order-info { text-align:left; margin-top:15px; }
+.notice { margin-top:15px; font-size:14px; color:#555; }
+@keyframes fadeIn { from {opacity:0; transform:translateY(-20px);} to {opacity:1; transform:translateY(0);} }
 </style>
 </head>
 <body>
 
 <div class="confirm-container">
-    <h1>Order Confirmation</h1>
-    <p id="trackingText"></p>
+    <h1>Order Confirmed ✅</h1>
+    <p id="trackingIdDisplay"></p>
 
-    <ul>
-        <li>Your order will arrive around 5 days after confirmation.</li>
-        <li>If you want to cancel, click the Cancel button below.</li>
-        <li>Thank you.</li>
-    </ul>
+    <div class="order-info" id="orderDetails"></div>
 
-    <button onclick="cancelOrder()">Cancel Order</button>
-    <button onclick="goBack()">Back to Store</button>
+    <button onclick="cancelOrder()">Cancel Order ❌</button>
+    <button class="back-btn" onclick="window.location.href='index.html'">← Back to Store</button>
+
+    <div class="notice">
+        - Your order will be delivered around 5 days after confirmation.<br>
+        - If you want to cancel it, click on the cancel button above.<br>
+        - Thank you.
+    </div>
 </div>
 
 <script>
-// Get query params
 const params = new URLSearchParams(window.location.search);
-const trackingId = params.get("tracking");
-const product = params.get("product");
-const type = params.get("type");
-const price = params.get("price");
-const name = params.get("name");
-const cls = params.get("class");
-const phone = params.get("phone");
+const trackingId = params.get('trackingId');
 
-document.getElementById("trackingText").innerText = `Please note it down: ${trackingId}`;
+if (!trackingId) {
+    alert("No tracking ID found. Redirecting to store.");
+    window.location.href = 'index.html';
+}
 
-// Cancel order function
+// Retrieve order details from localStorage
+let orders = JSON.parse(localStorage.getItem('orders')) || [];
+let order = orders.find(o => o.trackingId === trackingId);
+
+if (!order) {
+    alert("Order not found. Redirecting to store.");
+    window.location.href = 'index.html';
+}
+
+// Display tracking ID
+document.getElementById('trackingIdDisplay').innerHTML = `<strong>Please note it down:</strong> ${trackingId}`;
+
+// Display order details
+document.getElementById('orderDetails').innerHTML = `
+<strong>Product:</strong> ${order.product} (${order.type})<br>
+<strong>Price:</strong> $${order.price}<br>
+<strong>Name:</strong> ${order.name}<br>
+<strong>Class:</strong> ${order.cls}<br>
+<strong>Phone:</strong> ${order.phone || 'N/A'}
+`;
+
 function cancelOrder() {
-    fetch("https://discord.com/api/webhooks/1422839520977621012/dmCTctd81k-0KjhaTjHkBY80BM4qgAzV2amKGZy856J2xzg8-fIQ_TukZfnxbUGJvwVI", {
+    if (!confirm("Are you sure you want to cancel this order?")) return;
+
+    // Update localStorage
+    orders = orders.map(o => {
+        if (o.trackingId === trackingId) o.status = 'cancelled';
+        return o;
+    });
+    localStorage.setItem('orders', JSON.stringify(orders));
+
+    // Send Discord webhook
+    fetch("YOUR_DISCORD_WEBHOOK_URL", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            content: `❌ Order Cancelled!\nName: ${name}\nClass: ${cls}\nPhone: ${phone || "N/A"}\nProduct: ${product}\nType: ${type}\nPrice: ₹${price}\nTracking ID: ${trackingId}`
+            content: `❌ Order Cancelled\nName: ${order.name}\nClass: ${order.cls}\nPhone: ${order.phone || 'N/A'}\nProduct: ${order.product}\nType: ${order.type}\nPrice: ${order.price}\nTracking ID: ${trackingId}`
         })
     });
-    alert("Order cancelled. Redirecting back to store...");
-    window.location.href = "index.html";
-}
 
-function goBack() {
-    window.location.href = "index.html";
+    alert("Your order has been cancelled. Redirecting to store.");
+    window.location.href = 'index.html';
 }
 </script>
 
