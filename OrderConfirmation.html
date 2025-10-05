@@ -4,70 +4,137 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Order Confirmation</title>
-
 <style>
-body { margin:0; font-family:'Segoe UI',sans-serif; background:linear-gradient(135deg,#a1c4fd,#c2e9fb); display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
-.confirm-container { background:#fff; border-radius:20px; box-shadow:0 12px 30px rgba(0,0,0,0.2); padding:35px; max-width:550px; width:100%; text-align:center; animation: slideUp 1s ease-in-out; }
-h1 { color:#28a745; margin-bottom:10px; }
-h2 { font-size:18px; color:#444; margin-bottom:20px; }
-.details { text-align:left; margin-top:15px; font-size:16px; background:#f9f9f9; padding:15px; border-radius:12px; box-shadow:inset 0 2px 6px rgba(0,0,0,0.05); }
-.details p { margin:6px 0; }
-ul { text-align:left; margin-top:20px; }
-ul li { margin:8px 0; }
-button { background:#ff4d4d; color:white; border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-size:18px; margin-top:20px; transition:transform 0.2s, background 0.3s; }
-button:hover { background:#ff1a1a; transform:scale(1.05); }
-.notice { margin-top:25px; font-size:14px; color:#555; font-style:italic; }
-@keyframes slideUp { from{opacity:0; transform:translateY(30px);} to{opacity:1; transform:translateY(0);} }
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #ffcccc, #ffe6e6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 500px;
+  padding: 30px;
+  text-align: center;
+  animation: fadeIn 0.8s ease;
+}
+
+h1 {
+  color: #ff4d4d;
+  margin-bottom: 10px;
+}
+
+p {
+  color: #555;
+  font-size: 16px;
+}
+
+button {
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  color: white;
+  margin: 10px;
+  transition: 0.3s;
+}
+
+.cancel-btn {
+  background: #ff4d4d;
+}
+
+.cancel-btn:hover {
+  background: #e60000;
+}
+
+.store-btn {
+  background: #4caf50;
+}
+
+.store-btn:hover {
+  background: #3e8e41;
+}
+
+.tracking {
+  font-weight: bold;
+  color: #333;
+  background: #f7f7f7;
+  padding: 8px 15px;
+  border-radius: 8px;
+  margin-top: 10px;
+  display: inline-block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 </style>
 </head>
 <body>
 
-<div class="confirm-container">
-    <h1>✅ Order Confirmed!</h1>
-    <h2>You can close this page safely now.</h2>
-
-    <div class="details">
-        <p><strong>🆔 Tracking ID:</strong> <span id="tracking"></span></p>
-        <p><strong>📌 Product:</strong> <span id="product"></span></p>
-        <p><strong>💰 Price:</strong> ₹<span id="price"></span></p>
-    </div>
-
-    <ul>
-        <li>📦 Your order will arrive around <strong>5 days</strong> after confirmation.</li>
-        <li>❌ If you want to cancel it, click on the Cancel button below.</li>
-        <li>🙏 Thank you for ordering with PaperCraft Models!</li>
-    </ul>
-
-    <button onclick="cancelOrder()">Cancel Order</button>
-
-    <div class="notice">
-        Once cancelled, you will be redirected back to the store.
-    </div>
+<div class="container">
+  <h1>Order Confirmed 🎉</h1>
+  <p>Your order has been successfully placed!</p>
+  <p>Please note down your Tracking ID:</p>
+  <div class="tracking" id="trackingId"></div>
+  <p>Please note it down. The order will arrive in about 5 days after confirmation.</p>
+  <p>If you want to cancel it, click below.</p>
+  <p>Thank you!</p>
+  <div>
+    <button class="cancel-btn" onclick="cancelOrder()">Cancel Order</button>
+    <button class="store-btn" onclick="window.location.href='index.html'">Back to Store</button>
+  </div>
+  <h3 style="margin-top:20px; color:#666;">You can close this page safely now.</h3>
 </div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const trackingID = params.get("tracking");
-const product = params.get("product");
-const price = params.get("price");
+const discordWebhook = "https://discord.com/api/webhooks/1422839520977621012/dmCTctd81k-0KjhaTjHkBY80BM4qgAzV2amKGZy856J2xzg8-fIQ_TukZfnxbUGJvwVI";
 
-document.getElementById("tracking").textContent = trackingID;
-document.getElementById("product").textContent = product;
-document.getElementById("price").textContent = price;
+document.addEventListener("DOMContentLoaded", () => {
+  // Retrieve tracking ID
+  const params = new URLSearchParams(window.location.search);
+  const trackingId = params.get("trackingId") || "UNKNOWN";
+  document.getElementById("trackingId").textContent = trackingId;
+
+  // Send order confirmation to Discord
+  fetch(discordWebhook, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      content: `✅ **New Order Confirmed!**\nTracking ID: ${trackingId}`
+    })
+  });
+});
 
 function cancelOrder() {
-    const cancelDetails = {
-        content: `❌ **Order Cancelled**\n🆔 Tracking ID: ${trackingID}\n📌 Product: ${product}\n💰 Price: ${price}`
-    };
+  const trackingId = document.getElementById("trackingId").textContent;
+  if (!confirm("Are you sure you want to cancel this order?")) return;
 
-    fetch("YOUR_DISCORD_WEBHOOK_URL", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(cancelDetails)
-    }).then(() => {
-        alert("Order cancelled. Redirecting back to store...");
-        window.location.href = "index.html";
-    });
+  // Send cancellation to Discord
+  fetch(discordWebhook, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      content: `❌ **Order Cancelled!**\nTracking ID: ${trackingId}`
+    })
+  })
+  .then(() => {
+    alert("Your order has been cancelled successfully!");
+    window.location.href = "index.html";
+  })
+  .catch(err => {
+    alert("Failed to cancel order. Please try again.");
+    console.error(err);
+  });
 }
 </script>
 
