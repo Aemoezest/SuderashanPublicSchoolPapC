@@ -1,80 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Track Your Order</title>
-<style>
-body { margin:0; font-family: Arial, sans-serif; background:#f5f5f5; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
-.container { background:#fff; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.15); padding:30px; max-width:500px; width:100%; text-align:center; position:relative; }
-h1 { color:#ff4d4d; margin-bottom:20px; font-size:28px;}
-input { width:90%; padding:12px; margin:10px 0; border-radius:8px; border:1px solid #ccc; font-size:16px; }
-button { background:#ff4d4d; color:white; border:none; padding:12px 20px; border-radius:8px; cursor:pointer; font-size:16px; margin:10px; transition:0.3s; }
-button:hover { background:#ff1a1a; transform:scale(1.05);}
-.back-btn { background:#555; }
-.notice { margin-top:15px; font-size:14px; color:#555; }
-#orderInfo { margin-top:15px; font-size:16px; color:#333; white-space:pre-line; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Track Order</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ffb347, #ffcc33);
+      text-align: center;
+      color: #333;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      display: inline-block;
+      padding: 30px 50px;
+      animation: fadeIn 0.8s ease;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h1 {
+      color: #222;
+      font-size: 2em;
+    }
+
+    input {
+      padding: 12px;
+      width: 80%;
+      border: 2px solid #e67e22;
+      border-radius: 8px;
+      font-size: 1em;
+      margin: 10px 0;
+    }
+
+    button {
+      background-color: #e67e22;
+      border: none;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #d35400;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      background: #fff7e6;
+      border: 1px solid #f1c40f;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>📦 Track Your Order</h1>
+    <p>Enter your <strong>Tracking ID</strong> below to check your order status.</p>
 
-<div class="container">
-    <h1>Track Your Order</h1>
     <input type="text" id="trackingInput" placeholder="Enter your Tracking ID">
-    <button id="trackBtn">Check Status</button>
-    <div id="orderInfo">Your order details will appear here.</div>
-    <button id="cancelBtn" style="display:none;">Cancel Order</button>
-    <button class="back-btn" onclick="window.location.href='index.html'">Back to Store</button>
-</div>
+    <br>
+    <button id="trackBtn">Track Order</button>
 
-<script>
-// Discord webhook
-const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1422839520977621012/dmCTctd81k-0KjhaTjHkBY80BM4qgAzV2amKGZy856J2xzg8-fIQ_TukZfnxbUGJvwVI";
+    <div class="result" id="resultBox" style="display:none;">
+      <p><strong>Tracking ID:</strong> <span id="trackingId"></span></p>
+      <p><strong>Item:</strong> <span id="itemName"></span></p>
+      <p><strong>Status:</strong> <span id="orderStatus"></span></p>
+      <button id="cancelOrder" style="display:none;">Cancel Order</button>
+    </div>
 
-// Load orders from localStorage
-let orders = JSON.parse(localStorage.getItem('orders')) || [];
-let currentOrder = null;
+    <button style="margin-top:30px;" onclick="window.location.href='index.html'">🏪 Back to Store</button>
+  </div>
 
-document.getElementById('trackBtn').addEventListener('click', () => {
-    const trackingId = document.getElementById('trackingInput').value.trim();
-    if(!trackingId) return alert("Please enter a tracking ID.");
+  <script>
+    const webhookURL = "https://discord.com/api/webhooks/1422839520977621012/dmCTctd81k-0KjhaTjHkBY80BM4qgAzV2amKGZy856J2xzg8-fIQ_TukZfnxbUGJvwVI";
 
-    currentOrder = orders.find(o => o.trackingId === trackingId);
+    const trackBtn = document.getElementById("trackBtn");
+    const resultBox = document.getElementById("resultBox");
+    const trackingIdSpan = document.getElementById("trackingId");
+    const itemNameSpan = document.getElementById("itemName");
+    const orderStatusSpan = document.getElementById("orderStatus");
+    const cancelBtn = document.getElementById("cancelOrder");
 
-    if(currentOrder){
-        let statusText = `Product: ${currentOrder.product}\nType: ${currentOrder.type}\nPrice: ₹${currentOrder.price}\nStatus: ${currentOrder.status}\nTracking ID: ${trackingId}`;
-        document.getElementById('orderInfo').innerText = statusText;
+    trackBtn.addEventListener("click", () => {
+      const enteredId = document.getElementById("trackingInput").value.trim();
+      const savedTrackingId = localStorage.getItem("trackingId");
+      const selectedItem = localStorage.getItem("selectedItem");
 
-        if(currentOrder.status !== "cancelled"){
-            document.getElementById('cancelBtn').style.display = "inline-block";
-        } else {
-            document.getElementById('cancelBtn').style.display = "none";
-        }
-    } else {
-        document.getElementById('orderInfo').innerText = "No order found with this tracking ID.";
-        document.getElementById('cancelBtn').style.display = "none";
-    }
-});
+      if (!enteredId) {
+        alert("Please enter a Tracking ID!");
+        return;
+      }
 
-document.getElementById('cancelBtn').addEventListener('click', () => {
-    if(!currentOrder) return;
+      resultBox.style.display = "block";
 
-    currentOrder.status = "cancelled";
-    localStorage.setItem('orders', JSON.stringify(orders));
+      if (enteredId === savedTrackingId && selectedItem) {
+        trackingIdSpan.textContent = savedTrackingId;
+        itemNameSpan.textContent = selectedItem;
+        orderStatusSpan.textContent = "Active (Processing)";
+        cancelBtn.style.display = "inline-block";
+      } else {
+        trackingIdSpan.textContent = enteredId;
+        itemNameSpan.textContent = "Unknown";
+        orderStatusSpan.textContent = "❌ No active order found with this ID.";
+        cancelBtn.style.display = "none";
+      }
+    });
 
-    // Send Discord notification
-    fetch(DISCORD_WEBHOOK, {
+    cancelBtn.addEventListener("click", () => {
+      const savedTrackingId = localStorage.getItem("trackingId");
+      const selectedItem = localStorage.getItem("selectedItem");
+
+      if (!savedTrackingId) {
+        alert("No order to cancel!");
+        return;
+      }
+
+      fetch(webhookURL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            content: `❌ Order Cancelled from Tracking Page!\nName: ${currentOrder.name}\nClass: ${currentOrder.cls}\nProduct: ${currentOrder.product}\nType: ${currentOrder.type}\nPrice: ₹${currentOrder.price}\nTracking ID: ${currentOrder.trackingId}`
+          content: `❌ Order *Cancelled from Tracking Page*.\n**Item:** ${selectedItem || "Unknown"}\n**Tracking ID:** ${savedTrackingId}`
         })
+      })
+      .then(() => {
+        alert("Your order has been cancelled.");
+        localStorage.removeItem("trackingId");
+        localStorage.removeItem("selectedItem");
+        orderStatusSpan.textContent = "Cancelled";
+        cancelBtn.style.display = "none";
+      })
+      .catch(() => alert("Error sending cancellation message."));
     });
-
-    alert("Your order has been cancelled. Redirecting to store...");
-    window.location.href = "index.html";
-});
-</script>
-
+  </script>
 </body>
 </html>
