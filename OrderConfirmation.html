@@ -73,6 +73,13 @@
     background: #d35400;
   }
 
+  #trackingId {
+    font-weight: bold;
+    color: #d35400;
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -89,14 +96,15 @@
     <p><strong>Item:</strong> <span id="itemName">Loading...</span></p>
     <p><strong>Type:</strong> <span id="itemType">Loading...</span></p>
     <p><strong>Price:</strong> ₹<span id="itemPrice">Loading...</span></p>
+    <p><strong>Tracking ID:</strong> <span id="trackingId">Generating...</span></p>
     <p><strong>Status:</strong> <span id="orderStatus">Active (Processing)</span></p>
   </div>
 
   <div class="note">
     <ul style="text-align:left; display:inline-block;">
-      <li>Your order will arrive around <strong>5 days</strong> after confirmation.</li>
-      <li>If you want to cancel it, click the cancel button below.</li>
-      <li>Thank you for ordering!</li>
+      <li>Your tracking ID is shown above. Save it for tracking your order.</li>
+      <li>Your order will arrive in about <strong>5 days</strong>.</li>
+      <li>Click below if you want to cancel your order.</li>
     </ul>
   </div>
 
@@ -131,9 +139,10 @@ window.onload = () => {
   document.getElementById("itemName").textContent = product;
   document.getElementById("itemType").textContent = type;
   document.getElementById("itemPrice").textContent = price;
+  document.getElementById("trackingId").textContent = trackingId;
   document.getElementById("orderStatus").textContent = "✅ Active (Processing)";
 
-  // Send to Discord
+  // Send order info to Discord
   fetch(webhookURL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
