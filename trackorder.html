@@ -1,153 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Track Order</title>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #ffb347, #ffcc33);
-      text-align: center;
-      color: #333;
-      margin: 0;
-      padding: 40px;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Track Order</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #ffb347, #ffcc33);
+    text-align: center;
+    color: #333;
+    margin: 0;
+    padding: 40px;
+  }
 
-    .container {
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-      display: inline-block;
-      padding: 30px 50px;
-      animation: fadeIn 0.8s ease;
-      max-width: 500px;
-      width: 100%;
-    }
+  .container {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    display: inline-block;
+    padding: 30px 50px;
+    animation: fadeIn 0.8s ease;
+    max-width: 500px;
+    width: 100%;
+  }
 
-    h1 {
-      color: #222;
-      font-size: 2em;
-    }
+  h1 {
+    color: #222;
+    font-size: 2em;
+  }
 
-    input {
-      padding: 12px;
-      width: 80%;
-      border: 2px solid #e67e22;
-      border-radius: 8px;
-      font-size: 1em;
-      margin: 10px 0;
-    }
+  input {
+    padding: 12px;
+    width: 80%;
+    border: 2px solid #e67e22;
+    border-radius: 8px;
+    font-size: 1em;
+    margin: 10px 0;
+  }
 
-    button {
-      background-color: #e67e22;
-      border: none;
-      color: white;
-      padding: 12px 25px;
-      border-radius: 8px;
-      font-size: 1em;
-      cursor: pointer;
-      transition: 0.3s;
-      margin-top: 10px;
-    }
+  button {
+    background-color: #e67e22;
+    border: none;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+  }
 
-    button:hover {
-      background-color: #d35400;
-    }
+  button:hover {
+    background-color: #d35400;
+  }
 
-    .result {
-      margin-top: 20px;
-      padding: 20px;
-      border-radius: 12px;
-      background: #fff7e6;
-      border: 1px solid #f1c40f;
-    }
+  .result {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 12px;
+    background: #fff7e6;
+    border: 1px solid #f1c40f;
+  }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>📦 Track Your Order</h1>
-    <p>Enter your <strong>Tracking ID</strong> below to check your order status.</p>
 
-    <input type="text" id="trackingInput" placeholder="Enter your Tracking ID">
-    <br>
-    <button id="trackBtn">Track Order</button>
+<div class="container">
+  <h1>📦 Track Your Order</h1>
+  <p>Enter your <strong>Tracking ID</strong> below to check your order status.</p>
 
-    <div class="result" id="resultBox" style="display:none;">
-      <p><strong>Tracking ID:</strong> <span id="trackingId"></span></p>
-      <p><strong>Item:</strong> <span id="itemName"></span></p>
-      <p><strong>Status:</strong> <span id="orderStatus"></span></p>
-      <button id="cancelOrder" style="display:none;">Cancel Order</button>
-    </div>
+  <input type="text" id="trackingInput" placeholder="Enter your Tracking ID">
+  <br>
+  <button id="trackBtn">Track Order</button>
 
-    <button style="margin-top:30px;" onclick="window.location.href='index.html'">🏪 Back to Store</button>
+  <div class="result" id="resultBox" style="display:none;">
+    <p><strong>Tracking ID:</strong> <span id="trackingId"></span></p>
+    <p><strong>Item:</strong> <span id="itemName"></span></p>
+    <p><strong>Status:</strong> <span id="orderStatus"></span></p>
+    <button id="cancelOrder" style="display:none;">Cancel Order</button>
   </div>
 
-  <script>
-    const webhookURL = "https://discord.com/api/webhooks/1422839520977621012/dmCTctd81k-0KjhaTjHkBY80BM4qgAzV2amKGZy856J2xzg8-fIQ_TukZfnxbUGJvwVI";
+  <button style="margin-top:30px;" onclick="window.location.href='index.html'">🏪 Back to Store</button>
+</div>
 
-    const trackBtn = document.getElementById("trackBtn");
-    const resultBox = document.getElementById("resultBox");
-    const trackingIdSpan = document.getElementById("trackingId");
-    const itemNameSpan = document.getElementById("itemName");
-    const orderStatusSpan = document.getElementById("orderStatus");
-    const cancelBtn = document.getElementById("cancelOrder");
+<script>
+const webhookURL = "https://discord.com/api/webhooks/1422839520977621012/dmCTctd81k-0KjhaTjHkBY80BM4qgAzV2amKGZy856J2xzg8-fIQ_TukZfnxbUGJvwVI";
 
-    trackBtn.addEventListener("click", () => {
-      const enteredId = document.getElementById("trackingInput").value.trim();
-      const savedTrackingId = localStorage.getItem("trackingId");
-      const selectedItem = localStorage.getItem("selectedItem");
+const trackBtn = document.getElementById("trackBtn");
+const resultBox = document.getElementById("resultBox");
+const trackingIdSpan = document.getElementById("trackingId");
+const itemNameSpan = document.getElementById("itemName");
+const orderStatusSpan = document.getElementById("orderStatus");
+const cancelBtn = document.getElementById("cancelOrder");
 
-      if (!enteredId) {
-        alert("Please enter a Tracking ID!");
-        return;
-      }
+trackBtn.addEventListener("click", () => {
+  const enteredId = document.getElementById("trackingInput").value.trim();
+  const savedTrackingId = localStorage.getItem("trackingId");
+  const selectedItem = localStorage.getItem("selectedItem");
+  const orderStatus = localStorage.getItem("orderStatus") || "Active";
 
-      resultBox.style.display = "block";
+  if (!enteredId) {
+    alert("Please enter a Tracking ID!");
+    return;
+  }
 
-      if (enteredId === savedTrackingId && selectedItem) {
-        trackingIdSpan.textContent = savedTrackingId;
-        itemNameSpan.textContent = selectedItem;
-        orderStatusSpan.textContent = "Active (Processing)";
-        cancelBtn.style.display = "inline-block";
-      } else {
-        trackingIdSpan.textContent = enteredId;
-        itemNameSpan.textContent = "Unknown";
-        orderStatusSpan.textContent = "❌ No active order found with this ID.";
-        cancelBtn.style.display = "none";
-      }
-    });
+  resultBox.style.display = "block";
 
-    cancelBtn.addEventListener("click", () => {
-      const savedTrackingId = localStorage.getItem("trackingId");
-      const selectedItem = localStorage.getItem("selectedItem");
+  if (enteredId === savedTrackingId && selectedItem) {
+    trackingIdSpan.textContent = savedTrackingId;
+    itemNameSpan.textContent = selectedItem;
+    orderStatusSpan.textContent = orderStatus === "Cancelled" ? "❌ Cancelled" : "✅ Active (Processing)";
+    cancelBtn.style.display = orderStatus === "Cancelled" ? "none" : "inline-block";
+  } else {
+    trackingIdSpan.textContent = enteredId;
+    itemNameSpan.textContent = "Unknown";
+    orderStatusSpan.textContent = "❌ No order found with this ID.";
+    cancelBtn.style.display = "none";
+  }
+});
 
-      if (!savedTrackingId) {
-        alert("No order to cancel!");
-        return;
-      }
+cancelBtn.addEventListener("click", () => {
+  const savedTrackingId = localStorage.getItem("trackingId");
+  const selectedItem = localStorage.getItem("selectedItem");
 
-      fetch(webhookURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          content: `❌ Order *Cancelled from Tracking Page*.\n**Item:** ${selectedItem || "Unknown"}\n**Tracking ID:** ${savedTrackingId}`
-        })
-      })
-      .then(() => {
-        alert("Your order has been cancelled.");
-        localStorage.removeItem("trackingId");
-        localStorage.removeItem("selectedItem");
-        orderStatusSpan.textContent = "Cancelled";
-        cancelBtn.style.display = "none";
-      })
-      .catch(() => alert("Error sending cancellation message."));
-    });
-  </script>
+  if (!savedTrackingId) {
+    alert("No active order found to cancel!");
+    return;
+  }
+
+  localStorage.setItem("orderStatus", "Cancelled");
+
+  fetch(webhookURL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      content: `❌ **Order Cancelled from Track Page**\n**Item:** ${selectedItem || "Unknown"}\n**Tracking ID:** ${savedTrackingId}`
+    })
+  })
+  .then(() => {
+    alert("Your order has been cancelled.");
+    orderStatusSpan.textContent = "❌ Cancelled";
+    cancelBtn.style.display = "none";
+  })
+  .catch(() => alert("Error sending cancellation message."));
+});
+</script>
 </body>
 </html>
