@@ -1,97 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Order Confirmation</title>
 <style>
-body {
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #fff0f0, #ffe0e0);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-}
-.container {
-  background: white;
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  max-width: 480px;
-  text-align: center;
-}
-h1 {
-  color: #ff4d4d;
-}
-p {
-  font-size: 16px;
-  color: #333;
-  margin: 10px 0;
-}
-button {
-  margin: 10px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  color: white;
-  transition: 0.3s;
-}
-.cancel-btn {
-  background: #ff4d4d;
-}
-.cancel-btn:hover {
-  background: #ff1a1a;
-}
-.store-btn {
-  background: #ffa64d;
-}
-.store-btn:hover {
-  background: #ff8c1a;
-}
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #ffb347, #ffcc33);
+    color: #333;
+    text-align: center;
+    margin: 0;
+    padding: 50px 20px;
+  }
+
+  .container {
+    background: white;
+    max-width: 600px;
+    margin: auto;
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    animation: fadeIn 0.8s ease;
+  }
+
+  h1 {
+    color: #e67e22;
+    font-size: 2em;
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    margin-top: 0;
+    color: #555;
+  }
+
+  .details {
+    margin-top: 25px;
+    text-align: left;
+    background: #fff9e6;
+    padding: 20px;
+    border-radius: 12px;
+    font-size: 16px;
+  }
+
+  .details p {
+    margin: 8px 0;
+  }
+
+  .note {
+    margin-top: 25px;
+    font-size: 15px;
+    color: #555;
+    background: #fff3cd;
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  button {
+    background: #e67e22;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    background: #d35400;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 </style>
 </head>
 <body>
+
 <div class="container">
   <h1>✅ Order Confirmed!</h1>
-  <p>Your order has been placed successfully.</p>
-  <p><strong>It will arrive in around 5 days after confirmation.</strong></p>
-  <p>If you want to cancel, click below.</p>
-  <p><strong>Thank you for ordering!</strong></p>
-  <p id="tracking"></p>
-  <button class="cancel-btn" onclick="cancelOrder()">Cancel Order</button>
-  <button class="store-btn" onclick="window.location.href='index.html'">Back to Store</button>
+  <h3>Thank you for your order!</h3>
+
+  <div class="details">
+    <p><strong>Item:</strong> <span id="itemName">Loading...</span></p>
+    <p><strong>Type:</strong> <span id="itemType">Loading...</span></p>
+    <p><strong>Price:</strong> ₹<span id="itemPrice">Loading...</span></p>
+    <p><strong>Status:</strong> <span id="orderStatus">Active (Processing)</span></p>
+  </div>
+
+  <div class="note">
+    <ul style="text-align:left; display:inline-block;">
+      <li>Your order will arrive around <strong>5 days</strong> after confirmation.</li>
+      <li>If you want to cancel it, click the cancel button below.</li>
+      <li>Thank you for ordering!</li>
+    </ul>
+  </div>
+
+  <div style="margin-top:25px;">
+    <button id="cancelOrder">❌ Cancel Order</button>
+    <button onclick="window.location.href='index.html'">🏪 Back to Store</button>
+  </div>
+
+  <p style="margin-top:25px; color:#444;">You can close this page safely now.</p>
 </div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const trackingId = params.get('tracking');
-const product = params.get('product');
-const type = params.get('type');
-const price = params.get('price');
+const webhookURL = "https://discord.com/api/webhooks/1422839520977621012/dmCTctd81k-0KjhaTjHkBY80BM4qgAzV2amKGZy856J2xzg8-fIQ_TukZfnxbUGJvwVI";
 
-document.getElementById('tracking').innerHTML = `<strong>Tracking ID:</strong> ${trackingId}<br><em>Please note it down!</em>`;
+window.onload = () => {
+  const params = new URLSearchParams(window.location.search);
+  const product = params.get("product");
+  const type = params.get("type");
+  const price = params.get("price");
 
-function cancelOrder() {
-  const webhookURL = "https://discord.com/api/webhooks/1422839520977621012/dmCTctd81k-0KjhaTjHkBY80BM4qgAzV2amKGZy856J2xzg8-fIQ_TukZfnxbUGJvwVI";
-  const data = {
-    content: `❌ **Order Cancelled!**\n🔖 Tracking ID: ${trackingId}\n🧩 Product: ${product}\n🛠 Type: ${type}\n💰 Price: ₹${price}`
-  };
+  // Generate Tracking ID
+  const trackingId = "TRK" + Math.floor(Math.random() * 1000000);
+
+  // Save order details
+  localStorage.setItem("selectedItem", product);
+  localStorage.setItem("selectedType", type);
+  localStorage.setItem("selectedPrice", price);
+  localStorage.setItem("trackingId", trackingId);
+  localStorage.setItem("orderStatus", "Active");
+
+  // Display order details
+  document.getElementById("itemName").textContent = product;
+  document.getElementById("itemType").textContent = type;
+  document.getElementById("itemPrice").textContent = price;
+  document.getElementById("orderStatus").textContent = "✅ Active (Processing)";
+
+  // Send to Discord
+  fetch(webhookURL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      content: `🧾 **New Order Placed!**\n**Item:** ${product}\n**Type:** ${type}\n**Price:** ₹${price}\n**Tracking ID:** ${trackingId}`
+    })
+  });
+};
+
+// Cancel order
+document.getElementById("cancelOrder").addEventListener("click", () => {
+  const product = localStorage.getItem("selectedItem");
+  const trackingId = localStorage.getItem("trackingId");
+
+  localStorage.setItem("orderStatus", "Cancelled");
 
   fetch(webhookURL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  })
-  .then(() => {
-    alert("Order cancelled. Thank you!");
-    window.location.href = "index.html";
-  })
-  .catch(() => alert("Failed to cancel order. Please try again later."));
-}
+    body: JSON.stringify({
+      content: `❌ **Order Cancelled from Confirmation Page**\n**Item:** ${product || "Unknown"}\n**Tracking ID:** ${trackingId || "Unknown"}`
+    })
+  }).then(() => {
+    document.getElementById("orderStatus").textContent = "❌ Cancelled";
+    alert("Your order has been cancelled.");
+  });
+});
 </script>
+
 </body>
 </html>
